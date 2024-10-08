@@ -35,7 +35,8 @@ export type ItemSeparator = '-';
 export type SingleItem = {
     text: string;
     classname?: string;
-    icon?: string;
+    icon?: string | HTMLElement;
+    render?: ()=> HTMLElement;
     callback: (object: CallbackObject, map: OlMap) => void;
     data?: unknown;
 };
@@ -52,7 +53,8 @@ export type MenuEntry = {
 export type ItemWithNested = {
     text: string;
     classname?: string;
-    icon?: string;
+    icon?: string | HTMLElement;
+    render?:()=> HTMLElement;
     items: Item[];
 };
 

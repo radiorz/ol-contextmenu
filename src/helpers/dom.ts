@@ -53,29 +53,37 @@ export function addMenuEntry({
     isSubmenu: boolean;
     isInsideSubmenu?: boolean;
     emitter: TinyEmitter;
-}): HTMLLIElement {
+}): HTMLElement {
     const id = `_${Math.random().toString(36).slice(2, 11)}`;
 
     if (typeof item !== 'string' && 'text' in item) {
         const html = `<span>${item.text}</span>`;
         const frag = createFragment(html);
-        const element = document.createElement('li');
+        let element;
+        if (item.render) {
+            element = item.render()
+        } else {
+            element = document.createElement('li');
 
-        item.classname = item.classname || '';
+            item.classname = item.classname || '';
 
-        if (item.icon) {
-            if (item.classname === '') {
-                item.classname = CSS_CLASSES.icon;
-            } else if (item.classname.includes(CSS_CLASSES.icon) === false) {
-                item.classname += ` ${CSS_CLASSES.icon}`;
+            if (item.icon) {
+                if (item.classname === '') {
+                    item.classname = CSS_CLASSES.icon;
+                } else if (item.classname.includes(CSS_CLASSES.icon) === false) {
+                    item.classname += ` ${CSS_CLASSES.icon}`;
+                }
+                if (typeof item.icon === 'string') {
+                    element.setAttribute('style', `background-image:url(${item.icon})`);
+                } else {
+                    element.append(item.icon as HTMLElement)
+                }
             }
 
-            element.setAttribute('style', `background-image:url(${item.icon})`);
+            element.id = id;
+            element.className = item.classname;
+            element.append(frag);
         }
-
-        element.id = id;
-        element.className = item.classname;
-        element.append(frag);
         parentNode.append(element);
 
         const entry: MenuEntry = {
